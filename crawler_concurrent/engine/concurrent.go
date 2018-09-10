@@ -9,25 +9,26 @@ type ConcurrentEngine struct {
 
 type Scheduler interface {
 	Submit(Request)
-	ConfigureWorkerChan(chan Request)
+	WorkerChan() chan Request
+	WorkerReady(chan Request)
+	Run()
 }
 
 func (e ConcurrentEngine) Run(seeds ...Request) {
-	in := make(chan Request)
 	out := make(chan ParseResult)
-	e.Scheduler.ConfigureWorkerChan(in)
+	e.Scheduler.Run()
 
-	// 创建worker等待任务放入in
+	// 创建worker，等待任务被放入
 	for i := 0; i < e.WorkerCount; i++ {
-		createWorker(in, out)
+		createWorker(e.Scheduler.WorkerChan(), out, e.Scheduler)
 	}
 
-	// 将任务放入in
+	// 将任务发送给调度器
 	for _, r := range seeds {
 		e.Scheduler.Submit(r)
 	}
 
-	// 主协程打印
+	// 从out中拿输出，存储后将后续任务发送给调度器
 	for {
 		result := <-out
 		for _, item := range result.Items {
@@ -40,9 +41,11 @@ func (e ConcurrentEngine) Run(seeds ...Request) {
 	}
 }
 
-func createWorker(in chan Request, out chan ParseResult) {
+func createWorker(in chan Request, out chan ParseResult, s Scheduler) {
 	go func() {
 		for {
+			// 将该worker的channel发送给调度器
+			s.WorkerReady(in)
 			r := <-in
 			result, e := worker(r)
 			if e != nil {

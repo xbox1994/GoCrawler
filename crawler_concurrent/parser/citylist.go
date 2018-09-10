@@ -18,6 +18,7 @@ func ParseCityList(contents []byte) engine.ParseResult {
 			Url:        string(match[1]),
 			ParserFunc: ParseCity,
 		})
+		break
 	}
 	return result
 }

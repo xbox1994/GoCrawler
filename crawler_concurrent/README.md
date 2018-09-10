@@ -1,7 +1,6 @@
-一个Go写的单机版、并发版、分布式版爬虫
+## 并发版
 
-# 单机版
+与单机版的差别是：通过channel之间的数据传递代替函数的调用，使用go routine来并发执行下载与解析功能
 
-## 安装环境
-gopm get -g -v golang.org/x/text
-gopm get -g -v golang.org/x/net/html
+SimpleScheduler所有worker公用一个channel。无法有效管理worker与channel。
+QueuedScheduler每个worker都有一个channel，可以选择特定的Request放入特定的channel。该Scheduler自身开了一个协程去执行任务。
