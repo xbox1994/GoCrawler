@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"GoTest/crawler_standalone/engine"
+	"GoTest/crawler_concurrent/engine"
 	"regexp"
 )
 
@@ -18,7 +18,6 @@ func ParseCityList(contents []byte) engine.ParseResult {
 			Url:        string(match[1]),
 			ParserFunc: ParseCity,
 		})
-		break
 	}
 	return result
 }
