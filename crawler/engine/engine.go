@@ -31,9 +31,9 @@ func Run(seeds ...Request) {
 		parseResult := request.ParserFunc(body)
 		requestQueue = append(requestQueue, parseResult.Requests...)
 
-		// 打印
+		// 现在是打印，以后是保存
 		for _, item := range parseResult.Items {
-			fmt.Printf("Got item %s\n", item)
+			fmt.Printf("Got item %v\n", item)
 		}
 	}
 }
