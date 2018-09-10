@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"GoTest/crawler/engine"
+	"GoTest/crawler_standalone/engine"
 	"regexp"
 )
 

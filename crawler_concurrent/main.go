@@ -1,8 +1,8 @@
 package main
 
 import (
-	"GoTest/crawler/engine"
-	"GoTest/crawler/parser"
+	"GoTest/crawler_standalone/engine"
+	"GoTest/crawler_standalone/parser"
 )
 
 func main() {
