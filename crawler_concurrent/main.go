@@ -8,10 +8,15 @@ import (
 )
 
 func main() {
+	itemChan, e := persist.ItemSaver("dating_profile")
+	if e != nil {
+		panic(e)
+	}
+
 	engine.ConcurrentEngine{
 		Scheduler:   &scheduler.QueuedScheduler{},
 		WorkerCount: 10,
-		ItemChan:    persist.ItemSaver(),
+		ItemChan:    itemChan,
 	}.Run(engine.Request{
 		Url:        "http://www.zhenai.com/zhenghun",
 		ParserFunc: parser.ParseCityList,
