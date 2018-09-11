@@ -1,12 +1,9 @@
 package engine
 
-import (
-	"log"
-)
-
 type ConcurrentEngine struct {
 	Scheduler   Scheduler
 	WorkerCount int
+	ItemChan    chan interface{}
 }
 
 type Scheduler interface {
@@ -28,22 +25,21 @@ func (e ConcurrentEngine) Run(seeds ...Request) {
 	// 将任务发送给调度器
 	for _, r := range seeds {
 		if isDuplicate(r.Url) {
-			log.Printf("Duplicate request: %s", r.Url)
 			continue
 		}
 		e.Scheduler.Submit(r)
 	}
 
-	// 从out中拿输出，存储后将后续任务发送给调度器
-	itemCount := 0
 	for {
 		result := <-out
+		// 从out中拿输出，交给saver存储
 		for _, item := range result.Items {
-			itemCount++
-			log.Printf("Got profile #%d: %v\n", itemCount, item)
-			save(item)
+			go func(item interface{}) {
+				e.ItemChan <- item
+			}(item)
 		}
 
+		// 存储后将后续任务发送给调度器
 		for _, r := range result.Requests {
 			if isDuplicate(r.Url) {
 				continue
