@@ -1,6 +1,8 @@
 package engine
 
-import "log"
+import (
+	"log"
+)
 
 type ConcurrentEngine struct {
 	Scheduler   Scheduler
@@ -25,20 +27,40 @@ func (e ConcurrentEngine) Run(seeds ...Request) {
 
 	// 将任务发送给调度器
 	for _, r := range seeds {
+		if isDuplicate(r.Url) {
+			log.Printf("Duplicate request: %s", r.Url)
+			continue
+		}
 		e.Scheduler.Submit(r)
 	}
 
 	// 从out中拿输出，存储后将后续任务发送给调度器
+	itemCount := 0
 	for {
 		result := <-out
 		for _, item := range result.Items {
-			log.Printf("Got Item: %v\n", item)
+			itemCount++
+			log.Printf("Got profile #%d: %v\n", itemCount, item)
+			save(item)
 		}
 
 		for _, r := range result.Requests {
+			if isDuplicate(r.Url) {
+				continue
+			}
 			e.Scheduler.Submit(r)
 		}
 	}
+}
+
+var urls = make(map[string]bool)
+
+func isDuplicate(url string) bool {
+	if urls[url] {
+		return true
+	}
+	urls[url] = true
+	return false
 }
 
 func createWorker(in chan Request, out chan ParseResult, s Scheduler) {

@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"GoTest/crawler_concurrent/engine"
-	"GoTest/crawler_concurrent/model"
+	"GoTest/crawler_standalone/engine"
+	"GoTest/crawler_standalone/model"
 	"regexp"
 	"strconv"
 )
