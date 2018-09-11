@@ -17,12 +17,12 @@ func (e ConcurrentEngine) Run(seeds ...Request) {
 	out := make(chan ParseResult)
 	e.Scheduler.Run()
 
-	// 创建worker，等待任务被放入
+	// 1. 创建worker，等待任务被放入
 	for i := 0; i < e.WorkerCount; i++ {
 		createWorker(e.Scheduler.WorkerChan(), out, e.Scheduler)
 	}
 
-	// 将任务发送给调度器
+	// 4. 将任务发送给调度器，在调度器中将任务分配给worker
 	for _, r := range seeds {
 		if isDuplicate(r.Url) {
 			continue
@@ -31,15 +31,16 @@ func (e ConcurrentEngine) Run(seeds ...Request) {
 	}
 
 	for {
+		// 7. 主协程一开始被阻塞，直到有任务结果被传过来
 		result := <-out
-		// 从out中拿输出，交给saver存储
+		// 8. 从out中拿输出，交给saver存储
 		for _, item := range result.Items {
 			go func(item Item) {
 				e.ItemChan <- item
 			}(item)
 		}
 
-		// 存储后将后续任务发送给调度器
+		// 9. 存储后将后续任务发送给调度器
 		for _, r := range result.Requests {
 			if isDuplicate(r.Url) {
 				continue
@@ -62,13 +63,16 @@ func isDuplicate(url string) bool {
 func createWorker(in chan Request, out chan ParseResult, s Scheduler) {
 	go func() {
 		for {
-			// 将该worker的channel发送给调度器
+			// 2. 告诉调度器，已经有一个worker准备好了
 			s.WorkerReady(in)
+			// 3. 但此时没有任务塞进来，所以一开始所有worker都暂时被阻塞
 			r := <-in
+			// 5. 调度器将某个任务传给某个worker，执行真正的任务
 			result, e := worker(r)
 			if e != nil {
 				continue
 			}
+			// 6. 将任务执行结果传回engine
 			out <- result
 		}
 	}()

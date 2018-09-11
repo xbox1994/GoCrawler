@@ -1,6 +1,6 @@
 package scheduler
 
-import "GoTest/crawler_concurrent/engine"
+import "GoTest/crawler_distributed/engine"
 
 type SimpleScheduler struct {
 	workerChan chan engine.Request
