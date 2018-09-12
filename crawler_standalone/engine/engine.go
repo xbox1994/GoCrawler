@@ -1,7 +1,7 @@
 package engine
 
 import (
-	"GoTest/crawler_standalone/fetcher"
+	"GoCrawler/crawler_standalone/fetcher"
 	"fmt"
 	"github.com/gpmgo/gopm/modules/log"
 )

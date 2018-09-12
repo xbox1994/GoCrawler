@@ -1,10 +1,10 @@
 package main
 
 import (
-	"GoTest/crawler_concurrent/engine"
-	"GoTest/crawler_concurrent/parser"
-	"GoTest/crawler_concurrent/persist"
-	"GoTest/crawler_concurrent/scheduler"
+	"GoCrawler/crawler_concurrent/engine"
+	"GoCrawler/crawler_concurrent/parser"
+	"GoCrawler/crawler_concurrent/persist"
+	"GoCrawler/crawler_concurrent/scheduler"
 )
 
 func main() {

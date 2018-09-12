@@ -1,6 +1,6 @@
 package scheduler
 
-import "GoTest/crawler_distributed/engine"
+import "GoCrawler/crawler_distributed/engine"
 
 type QueuedScheduler struct {
 	requestChan chan engine.Request

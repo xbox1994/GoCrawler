@@ -1,8 +1,8 @@
 package server
 
 import (
-	"GoTest/crawler_distributed/persist"
-	"GoTest/crawler_distributed/rpcsupport"
+	"GoCrawler/crawler_distributed/persist"
+	"GoCrawler/crawler_distributed/rpcsupport"
 	"gopkg.in/olivere/elastic.v5"
 )
 

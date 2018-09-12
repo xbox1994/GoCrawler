@@ -1,10 +1,10 @@
 package main
 
 import (
-	"GoTest/crawler_distributed/engine"
-	"GoTest/crawler_distributed/model"
-	"GoTest/crawler_distributed/persist/server"
-	"GoTest/crawler_distributed/rpcsupport"
+	"GoCrawler/crawler_distributed/engine"
+	"GoCrawler/crawler_distributed/model"
+	"GoCrawler/crawler_distributed/persist/server"
+	"GoCrawler/crawler_distributed/rpcsupport"
 	"log"
 	"time"
 )

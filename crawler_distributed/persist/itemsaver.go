@@ -1,7 +1,7 @@
 package persist
 
 import (
-	"GoTest/crawler_distributed/engine"
+	"GoCrawler/crawler_distributed/engine"
 	"context"
 	"gopkg.in/olivere/elastic.v5"
 	"log"
