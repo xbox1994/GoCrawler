@@ -2,13 +2,15 @@ package main
 
 import (
 	"GoCrawler/crawler_distributed/client"
+	"GoCrawler/crawler_distributed/config"
 	"GoCrawler/crawler_distributed/engine"
 	"GoCrawler/crawler_distributed/parser"
 	"GoCrawler/crawler_distributed/scheduler"
+	"fmt"
 )
 
 func main() {
-	itemChan, e := client.ItemSaver(":1234")
+	itemChan, e := client.ItemSaver(fmt.Sprintf(":%d", config.ItemSaverPort))
 	if e != nil {
 		panic(e)
 	}
