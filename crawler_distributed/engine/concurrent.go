@@ -1,10 +1,13 @@
 package engine
 
 type ConcurrentEngine struct {
-	Scheduler   Scheduler
-	WorkerCount int
-	ItemChan    chan Item
+	Scheduler        Scheduler
+	WorkerCount      int
+	ItemChan         chan Item
+	RequestProcessor Processor
 }
+
+type Processor func(Request) (ParseResult, error)
 
 type Scheduler interface {
 	Submit(Request)
@@ -19,7 +22,7 @@ func (e ConcurrentEngine) Run(seeds ...Request) {
 
 	// 1. 创建worker，等待任务被放入
 	for i := 0; i < e.WorkerCount; i++ {
-		createWorker(e.Scheduler.WorkerChan(), out, e.Scheduler)
+		e.createWorker(e.Scheduler.WorkerChan(), out, e.Scheduler)
 	}
 
 	// 4. 将任务发送给调度器，在调度器中将任务分配给worker
@@ -60,7 +63,7 @@ func isDuplicate(url string) bool {
 	return false
 }
 
-func createWorker(in chan Request, out chan ParseResult, s Scheduler) {
+func (e *ConcurrentEngine) createWorker(in chan Request, out chan ParseResult, s Scheduler) {
 	go func() {
 		for {
 			// 2. 告诉调度器，已经有一个worker准备好了
@@ -68,8 +71,8 @@ func createWorker(in chan Request, out chan ParseResult, s Scheduler) {
 			// 3. 但此时没有任务塞进来，所以一开始所有worker都暂时被阻塞
 			r := <-in
 			// 5. 调度器将某个任务传给某个worker，执行真正的任务
-			result, e := worker(r)
-			if e != nil {
+			result, err := e.RequestProcessor(r)
+			if err != nil {
 				continue
 			}
 			// 6. 将任务执行结果传回engine

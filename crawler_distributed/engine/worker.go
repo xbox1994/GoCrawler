@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func worker(r Request) (ParseResult, error) {
+func Worker(r Request) (ParseResult, error) {
 	log.Printf("Fetching %s", r.Url)
 	// 下载html内容
 	body, e := fetcher.Fetch(r.Url)
@@ -15,5 +15,5 @@ func worker(r Request) (ParseResult, error) {
 	}
 
 	// 根据request里提供的解析方法解析当前html内容成为result放入队列
-	return r.ParserFunc(body, r.Url), nil
+	return r.Parser.Parse(body, r.Url), nil
 }

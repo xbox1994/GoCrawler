@@ -1,6 +1,7 @@
 package fetcher
 
 import (
+	"GoCrawler/crawler_distributed/config"
 	"bufio"
 	"fmt"
 	"github.com/gpmgo/gopm/modules/log"
@@ -13,7 +14,7 @@ import (
 	"time"
 )
 
-var rateLimiter = time.Tick(10 * time.Millisecond)
+var rateLimiter = time.Tick(config.Qps * time.Millisecond)
 
 func Fetch(url string) (body []byte, err error) {
 	<-rateLimiter

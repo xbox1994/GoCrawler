@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"GoCrawler/crawler_distributed/config"
 	"GoCrawler/crawler_distributed/engine"
 	"GoCrawler/crawler_distributed/model"
 	"regexp"
@@ -70,7 +71,7 @@ func ParseProfile(contents []byte, name string, url string) engine.ParseResult {
 		Items: []engine.Item{
 			{
 				Url:     url,
-				Type:    "zhenai",
+				Type:    config.ElasticType,
 				Id:      extractString([]byte(url), idUrlRe),
 				Payload: profile,
 			},
@@ -82,8 +83,8 @@ func ParseProfile(contents []byte, name string, url string) engine.ParseResult {
 	for _, m := range matches {
 		result.Requests = append(result.Requests,
 			engine.Request{
-				Url:        string(m[1]),
-				ParserFunc: ProfileParser(string(m[2])),
+				Url:    string(m[1]),
+				Parser: NewProfileParser(string(m[2])),
 			})
 	}
 
@@ -98,8 +99,20 @@ func extractString(contents []byte, re *regexp.Regexp) string {
 	return ""
 }
 
-func ProfileParser(name string) engine.ParserFunc {
-	return func(c []byte, url string) engine.ParseResult {
-		return ParseProfile(c, name, url)
+type ProfileParser struct {
+	userName string
+}
+
+func (p *ProfileParser) Parse(contents []byte, url string) engine.ParseResult {
+	return ParseProfile(contents, url, p.userName)
+}
+
+func (p *ProfileParser) Serialize() (name string, args interface{}) {
+	return config.ParseProfile, p.userName
+}
+
+func NewProfileParser(name string) *ProfileParser {
+	return &ProfileParser{
+		userName: name,
 	}
 }

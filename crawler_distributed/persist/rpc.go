@@ -1,7 +1,9 @@
 package persist
 
 import (
+	"GoCrawler/crawler_distributed/config"
 	"GoCrawler/crawler_distributed/engine"
+	"context"
 	"gopkg.in/olivere/elastic.v5"
 	"log"
 )
@@ -20,4 +22,13 @@ func (s *ItemSaverService) Save(item engine.Item, result *string) error {
 		log.Printf("Error saving %v, %v", item, e)
 	}
 	return e
+}
+
+func Save(client *elastic.Client, item engine.Item, index string) error {
+	_, e := client.Index().Index(index).Type(config.ElasticType).Id(item.Id).BodyJson(item).Do(context.Background())
+	if e != nil {
+		log.Printf("es create index fail %v", e)
+		return e
+	}
+	return nil
 }
