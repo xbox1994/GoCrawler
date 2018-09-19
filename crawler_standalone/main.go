@@ -6,7 +6,9 @@ import (
 )
 
 func main() {
-	engine.Run(engine.Request{
+	engine.SimpleEngine{
+		WorkerCount: 100,
+	}.Run(engine.Request{
 		Url:        "http://www.zhenai.com/zhenghun",
 		ParserFunc: parser.ParseCityList,
 	})

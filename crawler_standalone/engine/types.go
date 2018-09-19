@@ -10,6 +10,6 @@ type ParseResult struct {
 	Items    []interface{}
 }
 
-func NilParserFunc([]byte) ParseResult {
-	return ParseResult{}
+type Engine interface {
+	Run(seeds ...Request)
 }
