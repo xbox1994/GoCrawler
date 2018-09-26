@@ -1,0 +1,21 @@
+version: '3'
+services:
+  api-gateway:
+    build: ./api-gateway
+  greeter-service:
+    build: ./service/greeter
+    ports:
+      - 50051:50051
+    environment:
+      MICRO_SERVER_ADDRESS: ":50051"
+    depends_on:
+      - consul
+  consul:
+    image: consul
+    ports:
+    - "8500:8500"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8500"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
