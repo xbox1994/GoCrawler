@@ -37,18 +37,15 @@ func (s *Say) Hello(ctx context.Context, req *hello.HelloRequest, rsp *hello.Hel
 }
 
 func main() {
-	// Create service
 	service := micro.NewService(
-		micro.Name("go.micro.api.greeter"),
+		micro.Name("go.micro.api.gateway"),
 		micro.WrapHandler(AuthWrapper),
 	)
 
 	service.Init()
 
-	// setup Greeter Server Client
 	cl = hello.NewGreeterService("go.micro.srv.greeter", client.DefaultClient)
 
-	// register example handler
 	hello.RegisterGreeterHandler(service.Server(), new(Say))
 
 	if err := service.Run(); err != nil {
@@ -64,10 +61,8 @@ func AuthWrapper(fn server.HandlerFunc) server.HandlerFunc {
 			return errors.New("no auth meta-data found in request")
 		}
 
-		// Note this is now uppercase (not entirely sure why this is...)
 		token := meta["Token"]
 
-		// Auth here
 		authClient := user.NewUserService("go.micro.srv.user", client.DefaultClient)
 		authResp, err := authClient.ValidateToken(context.Background(), &user.Token{
 			Token: token,

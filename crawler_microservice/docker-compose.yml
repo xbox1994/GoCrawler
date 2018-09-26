@@ -2,12 +2,26 @@ version: '3'
 services:
   api-gateway:
     build: ./api-gateway
-  greeter-service:
+    ports:
+    - 50050:50050
+    environment:
+      MICRO_SERVER_ADDRESS: ":50050"
+    depends_on:
+      - consul
+  greeter:
     build: ./service/greeter
     ports:
-      - 50051:50051
+    - 50051:50051
     environment:
       MICRO_SERVER_ADDRESS: ":50051"
+    depends_on:
+    - consul
+  user:
+    build: ./service/user
+    ports:
+    - 50052:50052
+    environment:
+      MICRO_SERVER_ADDRESS: ":50052"
     depends_on:
       - consul
   consul:

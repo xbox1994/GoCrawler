@@ -3,6 +3,3 @@ build:
 	SET GOOS=linux && SET GOARCH=amd64
 	go build
 	docker-compose build
-
-run:
-	docker-compose up

@@ -1,2 +1,5 @@
 .idea
 .DS_Store
+crawler_microservice/api-gateway/api-gateway
+crawler_microservice/service/greeter/greeter
+crawler_microservice/service/user/user
