@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package go.micro.srv.greeter;
-
 service Greeter {
 	rpc Hello(HelloRequest) returns (HelloResponse) {}
 }

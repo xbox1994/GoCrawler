@@ -2,7 +2,6 @@ syntax = "proto3";
 
 import "github.com/micro/go-api/proto/api.proto";
 
-service Gateway {
-    rpc Call(go.api.Request) returns(go.api.Response) {};
+service User {
     rpc Login(go.api.Request) returns(go.api.Response) {};
 }
