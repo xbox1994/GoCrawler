@@ -2,15 +2,15 @@ package main
 
 import (
 	"GoCrawler/crawler_microservice/service/user/proto"
+	tokenService "GoCrawler/crawler_microservice/service/user/service"
 	"context"
 	"errors"
 	"fmt"
-	"github.com/micro/cli"
 	"github.com/micro/go-micro"
 )
 
 type User struct {
-	TokenService Authable
+	TokenService tokenService.Authable
 }
 
 func (u *User) Login(ctx context.Context, req *user.User, rsp *user.Token) error {
@@ -28,6 +28,10 @@ func (u *User) Login(ctx context.Context, req *user.User, rsp *user.Token) error
 }
 
 func (u *User) ValidateToken(ctx context.Context, req *user.Token, rsp *user.Token) error {
+	if req.Token == "" {
+		return errors.New("empty token")
+	}
+
 	decode, e := u.TokenService.Decode(req.Token)
 	if e != nil {
 		return e
@@ -47,29 +51,16 @@ func (u *User) ValidateToken(ctx context.Context, req *user.Token, rsp *user.Tok
 }
 
 func main() {
-	// Create a new service. Optionally include some options here.
 	service := micro.NewService(
 		micro.Name("go.micro.srv.user"),
-		micro.Version("latest"),
-		micro.Metadata(map[string]string{
-			"type": "helloworld",
-		}),
-
-		// Setup some flags. Specify --run_client to run the client
-
-		// Add runtime flags
-		// We could do this below too
-		micro.Flags(cli.BoolFlag{
-			Name:  "run_client",
-			Usage: "Launch the client",
-		}),
 	)
 
 	service.Init()
 
-	user.RegisterUserServiceHandler(service.Server(), new(User))
+	user.RegisterUserServiceHandler(service.Server(), &User{
+		TokenService: &tokenService.TokenService{},
+	})
 
-	// Run the server
 	if err := service.Run(); err != nil {
 		fmt.Println(err)
 	}

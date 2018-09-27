@@ -2,7 +2,7 @@
 // source: greeter.proto
 
 /*
-Package greeter is a generated protocol buffer package.
+Package go_micro_srv_greeter is a generated protocol buffer package.
 
 It is generated from these files:
 	greeter.proto
@@ -11,7 +11,7 @@ It has these top-level messages:
 	HelloRequest
 	HelloResponse
 */
-package greeter
+package go_micro_srv_greeter
 
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
@@ -55,7 +55,7 @@ func NewGreeterService(name string, c client.Client) GreeterService {
 		c = client.NewClient()
 	}
 	if len(name) == 0 {
-		name = "greeter"
+		name = "go.micro.srv.greeter"
 	}
 	return &greeterService{
 		c:    c,

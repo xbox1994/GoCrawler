@@ -1,4 +1,4 @@
-package main
+package service
 
 import (
 	"GoCrawler/crawler_microservice/service/user/proto"
@@ -11,9 +11,6 @@ type Authable interface {
 	Encode(user *user.User) (string, error)
 }
 
-// 定义加盐哈希密码时所用的盐
-// 要保证其生成和保存都足够安全
-// 比如使用 md5 来生成
 var privateKey = []byte("`xs#a_1-!")
 
 // 自定义的 metadata
@@ -23,13 +20,15 @@ type CustomClaims struct {
 	jwt.StandardClaims
 }
 
-//
-// 将 JWT 字符串解密为 CustomClaims 对象
-//
 func (srv *TokenService) Decode(tokenStr string) (*CustomClaims, error) {
 	t, err := jwt.ParseWithClaims(tokenStr, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return privateKey, nil
 	})
+
+	if err != nil {
+		return nil, err
+	}
+
 	// 解密转换类型并返回
 	if claims, ok := t.Claims.(*CustomClaims); ok && t.Valid {
 		return claims, nil

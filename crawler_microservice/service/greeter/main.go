@@ -25,7 +25,7 @@ func (g *Greeter) Hello(ctx context.Context, req *proto.HelloRequest, rsp *proto
 // Setup and the client
 func runClient(service micro.Service) {
 	// Create new greeter client
-	greeter := proto.NewGreeterService("greeter", service.Client())
+	greeter := proto.NewGreeterService("go.micro.srv.greeter", service.Client())
 
 	// Call the greeter
 	rsp, err := greeter.Hello(context.TODO(), &proto.HelloRequest{Name: "John"})
